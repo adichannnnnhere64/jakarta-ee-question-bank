@@ -1,14 +1,33 @@
-# Java Enterprise / Jakarta EE question bank
+# Java and Jakarta EE question bank
 
-This collection contains 3,200 multiple-choice questions in the Tutorialz catalog format: 1,300 easy, 900 medium, and 1,000 advanced. That includes 1,200 beginner Java questions and 600 medium OOP questions, in addition to the original Jakarta EE courses. The questions and explanations are original text based on 100 curated enterprise concepts from the official [Jakarta EE 11 specifications](https://jakarta.ee/release/11/) and 120 curated Java concepts from the official [Java language basics](https://dev.java/learn/language-basics/) and [classes and objects](https://dev.java/learn/classes-objects/) tutorials. Each question records a source URL; advanced questions also record the second topic and source used in its paired scenario. No specification text or third-party interview questions are copied into this repository.
+The public question source used by Tutorialz on Android and the web: **350 questions** across five courses, published as catalog revision **1**.
 
-`catalog.json` lists the five course files and their SHA-256 hashes. The learner bundles these files for offline use in web and Android builds, then refreshes from the public raw catalog URL when online. To publish this directory as a standalone GitHub repository, put its files at the repository root on the `main` branch. The default URL is `https://raw.githubusercontent.com/adichannnnnhere64/jakarta-ee-question-bank/main/catalog.json` and can be overridden at build time with `TUTORIALZ_CATALOG_URL`.
+| Course | Questions |
+| --- | ---: |
+| Enterprise basic | 100 |
+| Enterprise medium | 100 |
+| Enterprise advanced | 20 |
+| Beginner Java | 64 |
+| Java OOP | 66 |
 
-Regenerate after editing concept rows in `scripts/enterprise-content.py` or `scripts/java_content.py`:
+The former 3,200-question collection contained repeated variants. The current collection preserves curriculum coverage with distinct assessments. See [content notes](CONTENT.md), [coverage](coverage.json), [question conventions](QUESTION_CONVENTIONS.md), and [import attribution](imports/LICENSE-java-quiz.txt).
+
+The mobile app downloads [catalog.json](https://raw.githubusercontent.com/adichannnnnhere64/jakarta-ee-question-bank/main/catalog.json) and verifies the SHA-256 of each changed course. Existing installs receive the update on their next online launch or through **Settings → Sync questions now**. Their attempt history and active question snapshots are retained.
+
+## Updating questions
+
+Edit and validate the collection in [Tutorialz's content/enterprise directory](https://github.com/adichannnnnhere64/tutorialz/tree/main/content/enterprise), then publish those changes to Tutorialz `main`. This repository mirrors that directory; make question edits in Tutorialz so they also reach the bundled offline bank.
+
+The [Sync questions workflow](../../actions/workflows/sync.yml) checks Tutorialz `main` hourly and can also be run manually. It validates the source catalog and question bank, refuses collection changes or revision downgrades, and publishes changed files together in one commit. It copies existing JSON without regenerating questions. The upstream README is mirrored as `CONTENT.md`.
+
+For local publication from a Tutorialz checkout:
 
 ```sh
-python3 scripts/enterprise-content.py
-cargo run -p tutorialz-core -- content/enterprise/catalog.json
+cargo run -p tutorialz-core --locked -- content/enterprise/catalog.json
+python3 scripts/question_bank.py
+python3 /path/to/jakarta-ee-question-bank/scripts/sync.py content/enterprise
+git -C /path/to/jakarta-ee-question-bank diff --stat
+git -C /path/to/jakarta-ee-question-bank add .
+git -C /path/to/jakarta-ee-question-bank commit -m "Sync questions from Tutorialz"
+git -C /path/to/jakarta-ee-question-bank push origin main
 ```
-
-The generators live in the Tutorialz app repository. They create original practice prompts from curated concept rows, so the counts include scenario variations and paired topics; they are not 3,200 independently researched facts. Review generated questions before using them for hiring or formal assessment.

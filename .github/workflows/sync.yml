@@ -1,0 +1,59 @@
+name: Sync questions
+on:
+  schedule:
+    - cron: '23 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/sync.yml
+      - scripts/sync.py
+      - scripts/test_sync.py
+permissions:
+  contents: write
+concurrency:
+  group: sync-questions
+  cancel-in-progress: false
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: bank
+      - uses: actions/checkout@v4
+        with:
+          repository: adichannnnnhere64/tutorialz
+          ref: main
+          path: source
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: source
+      - name: Validate source questions and catalog
+        working-directory: source
+        run: |
+          cargo run -p tutorialz-core --locked -- content/enterprise/catalog.json
+          python3 scripts/question_bank.py
+      - name: Test publication safeguards
+        run: python3 -m unittest discover -s bank/scripts -p 'test_*.py'
+      - name: Copy published content
+        run: python3 bank/scripts/sync.py source/content/enterprise
+      - name: Commit changed content
+        working-directory: bank
+        run: |
+          git add .
+          if git diff --cached --quiet; then
+            echo "Question bank already matches Tutorialz main."
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          source_commit=$(git -C ../source rev-parse --short HEAD)
+          git commit -m "Sync questions from Tutorialz ${source_commit}"
+          git push origin HEAD:main
