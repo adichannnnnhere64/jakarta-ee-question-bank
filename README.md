@@ -1,6 +1,6 @@
 # Java and Jakarta EE question bank
 
-The public question source used by Tutorialz on Android and the web: **600 questions** across seven courses, published as catalog revision **3**.
+The public question source used by Tutorialz on Android and the web: **650 questions** across seven courses, published as catalog revision **4**.
 
 | Course | Questions |
 | --- | ---: |
@@ -9,7 +9,7 @@ The public question source used by Tutorialz on Android and the web: **600 quest
 | Enterprise advanced | 20 |
 | Beginner Java | 64 |
 | Java OOP | 66 |
-| [Jakarta Competency Exam](JAKARTA_COMPETENCY_EXAM.md) | 50 |
+| [Jakarta Competency Exam](JAKARTA_COMPETENCY_EXAM.md) | 100 |
 | [Jakarta Dummy Exam](JAKARTA_DUMMY_EXAM.md) | 200 |
 
 The former 3,200-question collection contained repeated variants. The current collection preserves curriculum coverage with distinct assessments. See [content notes](CONTENT.md), [coverage](coverage.json), [question conventions](QUESTION_CONVENTIONS.md), and [import attribution](imports/LICENSE-java-quiz.txt).
